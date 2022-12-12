@@ -1,0 +1,7 @@
+1. Write a procedure which will count number of managers in emp table.
+2. Write a function which will count the average of 5 numbers. Function should 
+  return avg and take 5 values as input.
+3. Write a function which will create an email id for employee. Email id is created
+   as ... first 3 letters of ename+ first 2 letters of job +'myComp.com'
+4. For the above procdure write a function which will accept eno as in parameter.
+   Check the output using select statement. 

@@ -1,0 +1,368 @@
+﻿
+SQL*Plus: Release 10.2.0.1.0 - Production on Thu Nov 17 21:16:13 2022
+
+Copyright (c) 1982, 2005, Oracle.  All rights reserved.
+
+SQL> set pagesize 150;
+SQL> set linesize 150;
+SQL> conn system/system
+Connected.
+SQL> select dno, count(dno)
+  2  from emp
+  3  group by dno
+  4  having count(dno)<4;
+having count(dno)<4
+             *
+ERROR at line 4:
+ORA-00904: "DNO": invalid identifier
+
+
+SQL>  select deptno, count(deptno)
+      from emp
+      group by deptno
+      having count(deptno)=6;
+
+
+count of emp on all depts
+select deptno "/Dept/" , count(*) "/# of members/"
+from emp
+group by deptno
+order by deptno;
+
+
+create another table with same structure
+create table new_emp
+as
+select * 
+from emp
+where 1=2;
+
+
+select deptno, sum(sal)
+from emp
+where sal>2000 and deptno=30
+group by deptno;
+
+
+select deptno, count(deptno)
+from emp
+where deptno=10
+group by deptno;
+
+select deptno, count(*)
+from emp
+where deptno=10
+group by deptno;
+
+select count(*) "count of member in dept 10"
+from emp
+where deptno=10;
+
+
+1. Find sum and avg of sal and netsal for each job
+   net sal=sal+comm
+
+   select job, sum(sal), avg(sal), sum(sal+nvl(comm,0)) "netsal"
+   from emp
+   group by job
+   order by job;
+
+2. Find how many analysts are there in each department
+
+  select deptno, count(*)
+  from emp
+  where job='ANALYST'
+  group by deptno;
+
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  select job, count(*)
+  from emp
+  group by job
+  having job = 'ANALYST';
+
+  
+  select count(*)
+  from emp
+  where job='ANALYST';
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+  for manager
+
+  select deptno, count(*)
+  from emp
+  where job='MANAGER'
+  group by deptno;
+
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  select count(*)
+  from emp
+  where job='MANAGER';
+
+  select job, count(*)
+  from emp
+  group by job
+  having job = 'MANAGER';
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
+3. Find sum , average of salary for all employees whose sal> 1500 departmentwise
+
+select deptno,sum(sal),avg(sal)
+from emp
+where sal>1500
+group by deptno;
+
+
+select deptno,sum(sal),avg(sal)
+from emp
+group by deptno;
+
+4. Find all salesman in each department
+
+  select deptno, empno, ename
+  from emp
+  where job='SALESMAN'
+  group by deptno, empno, ename;
+
+  select * 
+  from emp
+  where job='SALESMAN';
+
+5. to find how many employees are working under same manager
+xxxxxxxxxxxxxxxxx
+  select deptno, count(*)
+  from emp
+  where job != 'MANAGER'
+  group by deptno;
+xxxxxxxxxxxxxxxxxxx
+
+
+  select mgr, count(*)
+  from emp
+  group by mgr;
+
+
+
+6. To find max, min and sum of salary for all employees whose sal > 1500 and < 3000
+
+
+ select max(sal) "MAX" ,min(sal) "MIN" ,sum(sal) "SUM"
+ from emp
+ where sal>1500 and sal<3000;
+
+
+7. Display all departments whose avg sal > 2000
+
+select deptno, avg(sal) "OVER 2000"
+from emp
+group by deptno
+having avg(sal)>2000;
+
+8. Display all mgr under whom more than 2 analyst or salesman are working
+
+select mgr, count(*)
+from emp
+where job='ANALYST' or job = 'SALESMAN'
+group by mgr
+having count(*)>2;
+
+9. Create new table emp10 same as emp without any data.
+   check it's structure.
+
+   create table emp10
+   as 
+   select *
+   from emp
+   where 1=2;
+
+10. Create new table dept100 having same structure and data as that of dept table.
+Add primary key constraint on dno. check it's structure.
+
+
+create table dept100
+as 
+select * 
+from dept
+where 1=2;
+
+alter table dept100
+add constraint pkdeptno primary key(deptno);
+
+11.Create new table emp110 same as emp and store all employees working in dept 10.
+   Add primary key constraint on this table for eno. Add foreign key constraint on dno.
+   check it's structure.
+
+
+create table emp110
+as 
+select *
+from emp
+where deptno=10;
+
+alter table emp110
+add constraint pkempno primary key(empno);
+
+insert into dept100
+values(10, 'ACCOUNTS', 'PUNE');
+
+alter table emp110
+add constraint fkdeptno foreign key(deptno)
+references dept100(deptno);
+
+12. insert new row in emp where manager is null.
+
+insert into emp110 
+(EMPNO, ENAME, JOB, HIREDATE, SAL, DEPTNO)
+values(7999, 'SHANE', 'SPINNER', '24-JUNE-1982', 2500, 10)
+
+13. Display the emp details who do not have manager. 
+
+SELECT * 
+FROM EMP110
+WHERE MGR IS NULL;
+
+14.Write a query which will display name, department no and date of joining of all employees joined between  January 1, 1981 and March 31, 1983.
+    Sort it based on date of joining (ascending).
+
+
+SELECT ENAME, DEPTNO, HIREDATE
+FROM EMP
+WHERE HIREDATE BETWEEN '01-JAN-1981' AND'31-MAR-1983' 
+ORDER BY HIREDATE;
+
+15.List the details of the employee , whose names start with ‘A’ and end with ‘S’ or whose names contains N as the second or third character,
+  and end with either ‘N’ or ‘S’.
+
+
+SELECT * 
+FROM EMP
+WHERE REGEXP_LIKE(ENAME,'^A.*S$|^.N.*[NS]$|^..N.*[NS]$');
+
+16.Display all employee names from emp table in the following format
+   Hello Allen . 
+select
+concat('Hello ', ename)
+from emp;
+
+17. Create following tables for given schema.
+   trainer(tid PK, tname, cid fk)
+   course(cid pk, cname)
+   1. insert 5 meaningful records in both the tables.
+   2. One subject can be handled by multiple trainers. (cid in trainer table may repeat)
+   3. Try on delete set null on trainer table.
+
+
+create table course(
+cid number(4),
+cname varchar2(20),
+constraint pk_cid primary key(cid)
+);
+
+
+create table trainer(
+tid number(4),
+tname varchar2(20),
+cid number(4),
+constraint pk_tid primary key (tid),
+constraint fk_cid foreign key(cid)
+references course(cid)
+);  
+
+
+insert into course
+values(1111, 'C');
+insert into course
+values(2222, 'Python');
+insert into course
+values(3333, 'Java');
+insert into course
+values(4444, 'Excel');
+insert into course
+values(5555, 'DBT');
+
+insert into trainer
+values(1212, 'DNS', 1111);
+insert into trainer
+values(2323, 'SNE', 2222);
+insert into trainer
+values(3434, 'TRI', 3333);
+insert into trainer
+values(4545, 'SAN', 4444);
+insert into trainer
+values(1313, 'AMIT', 5555);
+
+ON DELETE SET NULL ON TRAINER TABLE
+
+ALTER TABLE TRAINER
+ADD CONSTRAINT ON DELETE SET NULL;
+
+
+ALTER TABLE trainer
+ADD CONSTRAINT fk_setnull_cid
+    FOREIGN KEY (cid)
+    REFERENCES course (cid)
+    ON DELETE SET NULL;
+
+
+alter table trainer
+drop constraint fk_cid;
+
+18. In the above course table , add new column fees.
+
+
+ALTER TABLE COURSE
+ADD FEES NUMBER(5);
+
+
+19. From tables emp100 and dept100 display the following data.
+    eno,ename,sal,dno and dept name.
+
+
+SELECT EMPNO, ENAME, SAL, DEPT.DEPTNO, DNAME
+FROM EMP, DEPT;
+
+
+20. Calculate how many employees earn sal greater than 1500 in each dept.
+
+SELECT DEPTNO,COUNT(*)
+FROM EMP
+WHERE SAL>1500
+GROUP BY DEPTNO;
+
+21. Use emp100 table to perform following query
+    Update employee salary . Increase sal of each employee by 15% sal+comm, change the job manager
+    mgr to 777 for all employees in dept 10.
+
+UPDATE EMP110
+SET SAL=SAL+SAL*.15;
+
+UPDATE EMP110
+SET MGR= 777 
+WHERE DEPTNO=10;
+
+
+
+create sequence mysequence
+start with 1
+increment by 1
+minvalue 1
+maxvalue 10
+nocycle;
+
+CREATE SEQUENCE MYNAMES
+START WITH 'ABC'
+INCREMENT BY 'A'
+NOCYCLE;
+
+insert into emp110(EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, DEPTNO)
+values(mysequence.nextval, 'SHREE', 'TEACHER',
+777, '01-JAN-2023', 25000,10);
+
+insert into emp110(EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, DEPTNO)
+values(mysequence.nextval, 'AMIT', 'WIREMAN',
+777, '01-JAN-2013', 2500,10);
+
+
+insert into emp110(EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, DEPTNO)
+values(mysequence.nextval, mynames.nextval, 'WIREMAN',
+777, '01-JAN-2013', 2500,10);

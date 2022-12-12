@@ -1,0 +1,174 @@
+select * 
+from emp
+where deptno=(
+			select deptno
+			from emp
+			where ename='SMITH');
+
+
+select * 
+from emp
+where deptno=(
+		    select deptno
+		    from dept
+		    where dname='RESEARCH');
+
+
+
+select * from emp
+where sal > all ( select sal 
+from emp
+where ename in ('ALLEN','SMITH')
+);
+
+
+
+
+solution for employee earning between allen and smith
+select * from emp
+where sal between (select sal 
+from emp where ename ='ALLEN')and(select sal from emp where ename ='SMITH');
+
+highest salary employee in emp table 
+select * 
+from emp 
+where sal = ( select max(sal) from emp);
+
+
+select deptno, empno, ename,
+case when deptno=10 then 'ACC'
+	 when deptno=20 then 'HR'
+	 when deptno=30 then 'TECH'
+	 else 'PURCHASE'
+	 end "departments"
+	from emp;
+
+
+create table product
+(pid number(2),
+pname varchar2(10),
+constraint pk_pid primary key (pid)
+);
+
+create table pdct
+(
+srno number(2),
+did number(2),
+qty number(4),
+price number(4,2),
+constraint sr_no primary key(srno),
+constraint fk_id foreign key (did) references product(pid)
+on delete cascade
+);
+
+insert into product
+values(1,'dahi');
+insert into product
+values(2,'shreekhand');
+insert into product
+values(3,'aandaa');
+insert into product
+values(4,'bread');
+insert into product
+values(5,'chips');
+
+create sequence srseq
+start with 0
+increment by 1
+minvalue 0
+maxvalue 100
+nocycle;
+
+
+SELECT srseq.NEXTVAL
+FROM   dual
+
+
+insert into pdct
+values(srseq.nextval,1,99,20.80);
+
+insert into pdct
+values(srseq.nextval,2,506,50.30);
+
+insert into pdct
+values(srseq.nextval,3,5000,5.20);
+
+
+insert into pdct
+values(srseq.nextval,4,8000,15);
+
+insert into pdct
+values(srseq.nextval,5,7852,10);
+
+
+
+
+
+select deptno, empno, ename,
+case when deptno=10 then 'ACC'
+	 when deptno=20 then 'HR'
+	 when deptno=30 then 'TECH'
+	 else 'PURCHASE'
+	 end "departments"
+	from emp;
+
+
+select srno,did,qty, price,
+case when qty<100 then 'low'
+	 when 100<=qty and qty<5000 then 'availabel'
+	 when 5000<=qty and qty<7000 then 'high'
+	 else 'excess'
+	 end "stock"
+	 from pdct;
+
+
+
+
+
+	 select dno, dname
+	 from employee
+	 group by dno
+
+
+	 select * 
+
+
+select *
+from dept
+where not exists(
+select deptno
+from emp
+where dept.deptno=emp.deptno);
+
+select * from dept
+where deptno!=all(
+select deptno
+from emp);
+
+select *
+from emp
+where exists (select
+ deptno from dept
+where emp.deptno=dept.deptno);
+
+
+CREATE VIEW sup_orders AS
+  SELECT suppliers.supplier_id, orders.quantity, orders.price
+  FROM suppliers
+
+
+create view name_sal 
+as
+select ename,job,sal
+from emp;
+
+
+
+
+create table empcopy
+as
+select * 
+from emp;
+
+
+update 
