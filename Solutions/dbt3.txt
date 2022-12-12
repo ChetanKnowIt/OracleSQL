@@ -1,0 +1,162 @@
+create table dept2
+(dno number(2),
+dname varchar2(10) not null,
+constraint pkdno primary key(dno));
+
+insert into dept2
+values(1,'acct');
+insert into dept2
+values(2,'mkt');
+insert into dept2
+values(3,'tech');
+insert into dept2
+values(4,'sale');
+
+
+create table emp2
+(eno number(2),
+ename varchar2(10) not null,
+deptno number(2),
+constraint pkeno primary key(eno),
+constraint fkdno foreign key (deptno) 
+references dept2(dno) on delete set null);
+
+
+insert into emp2 
+values(11, 'Smith', 1);
+insert into emp2
+values(22,'Radha', 2);
+insert into emp2
+values(33, 'Geeta', 3);
+insert into emp2
+values(44, 'Miller', 4);
+insert into emp2
+values(55, 'John', 2);
+insert into emp2 
+values(12, 'Sita', 1);
+
+
+
+delete from dept2 where dno=1;
+
+select * from emp2;
+
+update emp2 set deptno=1 where deptno is null;
+
+insert into dept2
+values(1,'acct');
+
+update emp2 set deptno=1 where deptno is null;
+
+drop table emp2;
+
+
+create table emp2
+(eno number(2),
+ename varchar2(10) not null,
+deptno number(2),
+constraint pkeno primary key(eno),
+constraint fkdno foreign key (deptno) 
+references dept2(dno) on delete cascade);
+
+
+1. if 't' in middle
+select *
+from emp2
+where regexp_like (ename, '.*t.*');
+
+2. starts with 'M' or ends with 'a'
+select * 
+from emp2
+where regexp_like(ename, '^M.*|.*a$');
+
+3. has double or more characters
+select * 
+from emp2
+where regexp_like(ename, '(.)\1+');
+
+
+To find all employees with name starting with either M or A and last character as either R or E
+select * from emp
+where regexp_like(ename, '^[MA].*[RE]$');
+
+select * from emp2 
+where regexp_like(ename, '^A.*e$|^s.*h$');
+
+select * from emp2
+where regexp_like(ename,'^[^AM].*');
+
+select * from emp 
+where SAL>1000 and SAL<3000 
+or regexp_like(JOB, '^A.*T$');
+
+select empno, ename, sal, sal+sal*0.1 "Increased Salary", nvl(comm, 100) "Comm", sal+nvl(comm,100) "Amount" from emp
+where regexp_like(ename, '^[AMS]');
+
+Select all employee with job is either CLERK or SALESMAN and sal >2000
+select * from emp
+where job = 'CLERK' or job = 'SALESMAN'
+and sal > 2000;
+
+Display all employees whose name starts with A and ends with either n or s, or works in dept 10
+select * from emp
+where regexp_like(ename, '^A.*[NS]$') 
+or deptno = 10;
+
+
+Display all employees who works in either dept 10 or 30 or joined in year 1982
+select * from emp
+where deptno = 10
+or deptno = 30
+or extract(year from hiredate) = 1982;
+
+select enam, deptno, hiredate
+from emp
+where deptno=10
+or deptno=30
+or hiredate > '31-Dec-1981' and hiredate < '01-Jan-1983';
+
+Display all employees with sal >2000 or job is either clerk or Salesman
+select * from emp
+where sal>2000
+or job = 'CLERK'
+or job = 'SALESMAN';
+
+
+list all departments whose name has atleast 5 characters.
+
+select dname from dept
+where regexp_like(dname,'^[A-Za-z]{7}');
+
+empno,ename,sal,new sal
+select empno,ename,sal,sal+sal*0.2 "new sal" from emp;
+
+19. Find all employees whose sal is divisible by 3 
+select * from emp
+where MOD(sal,3)=0;
+
+display name followed by 4 stars followed by sal 
+select concat(concat(ename, '****'), sal)
+from emp;
+
+display email as ename followed by mycompany.com
+select concat(ename, '@mycompany.com') "Email" from emp;
+
+Display email as 1st 3 chacarters of ename, followed by dot, followed by 2 and 3rd character of jobs,followed by 
+    @MyCompany
+select concat(concat(concat(substr(ename,1,3), '.'), substr(job,2,2)), '@MyCompany') "New Mail" from emp;
+
+
+23. Display string “Hello” followed by name followed by ! for all employees who earned commission
+select concat(concat('Hello ', initcap(ename)), '!') from emp where comm is not null;
+
+
+24. display all names length of each name should be 10 characters , add required spaces on left side of name, also 
+display jobs, length of jobs should be 9 characters add required on the right side of job.
+select lpad(ename,10,' ') "Name:", rpad(job,9) "Job:" from emp;
+
+25. Display all employees with sal >2000 or job is either clerk or Salesman
+select * from emp 
+where sal>2000
+or job = 'CLERK'
+OR JOB = 'SALESMAN';

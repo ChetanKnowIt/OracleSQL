@@ -1,0 +1,247 @@
+create following tables and solve following questions
+1. faculty(fid(PK),fname,sp.skill1,sp.skill2)
+   
+    CREATE TABLE faculty(
+   fid number primary key,
+   fname varchar2(20) not null,
+   sp_skill1 varchar2(30),
+   sp_skill2 varchar2(30));
+
+2. courses(cid(PK),cname,rid,fid(FK))
+
+    CREATE TABLE Courses(
+   cid number primary key,
+   cname varchar2(15) not null,
+   rid number, constraint fk foreign key(rid) references room(rid)
+   on delete set null, fid number,
+    foreign key(fid) references faculty(fid)
+   on delete set null
+    );
+
+3. room(roomid,rname,rloc)
+
+   CREATE TABLE room(
+   rid number primary key,
+   rname varchar2(15) not null,
+   rloc varchar2(20));
+
+  insert into  faculty
+values (10,'Amol','database','JAVA')
+
+ insert into  faculty
+values (11,'Asha','JAVA','MySQL');
+
+ insert into  faculty
+values (13,'Seeta','MySQL','database'
+);
+
+
+courses
+cid cname rid fid
+121 DBDA 100 10
+131 DAC 101
+141 DTISS
+151 DIOT 105 12
+
+faculty
+fid fname spskill1 spskill2
+10 Amol database JAVA
+11 Asha JAVA MySQL
+12 Kiran CPP Database
+13 Seeta MySQL database
+
+insert into faculty values(10, 'Amol', 'database' ,'JAVA');
+insert into faculty values(11, 'Asha', 'JAVA' ,'MySQL');
+insert into faculty values(12, 'Kiran', 'CPP', 'Database');
+insert into faculty values(13, 'Seeta', 'MySQL','database');
+
+x
+
+INSERT into courses values(121,'DBDA',100, 10);
+INSERT into courses (cid, cname, rid) values(131,'DAC',101);
+INSERT into courses (cid, cname) values(141,'DTISS');
+INSERT into courses values(151,'DIOT',105, 12);
+
+Room
+rid rname rloc
+100 jasmin 1st floor
+101 Rose 2nd floor
+105 Lotus 1st floor
+103 Mogra 1st floor
+
+
+INSERT into room values(100,'Jasmin','1st floor');
+INSERT into room values(101,'Rose','2nd floor');
+INSERT into room values(105,'Lotus','1st floor');
+INSERT into room values(103,'Mogra','1st floor');
+
+
+1. list all courses for which no room is assigned and all rooms which are available
+
+1. faculty(fid(PK),fname,sp.skill1,sp.skill2)
+2. courses(cid(PK),cname,rid,fid(FK))
+3. room(rid,rname,rloc)
+
+select c.cid CID, c.cname COURSE, r.rid RID, r.rname ROOM
+from courses c
+full join room r
+on c.rid = r.rid
+where c.rid is null;
+
+2. list all faculties who are not allocated to any course and rooms which are not
+allocated to any course
+
+select c.fid, f.fname, r.rid, r.rname
+from courses c, room r, faculty f
+where c.fid is null;
+
+
+3. list all rooms which are allocated or not allocated to any courses
+
+***SAME******SAME******SAME******SAME******SAME******SAME******SAME******SAME***
+select r.rid, r.rname, r.rloc, c.rid, c.cid, c.cname
+from room r
+left join courses c
+on r.rid = c.rid;
+
+select r.rid, r.rname, r.rloc, c.rid, c.cid, c.cname
+from courses c
+right join room r
+on r.rid = c.rid;
+
+***SAME******SAME******SAME******SAME******SAME******SAME******SAME******SAME***
+
+
+4. list all rooms which are not allocated to any courses
+
+SELECT r.rid, r.rname, r.rloc
+from room r
+left join courses c
+on r.rid = c.rid
+where c.rid is null;
+
+selct rid,rname
+from room
+where not exists (select *
+            from courses c
+            where c.rid=room.rid);
+
+
+5. display courses and faculty assigned to those courses whose special skill is
+  database
+
+
+1. faculty(fid(PK),fname,sp.skill1,sp.skill2)
+2. courses(cid(PK),cname,rid,fid(FK))
+3. room(rid,rname,rloc)
+
+
+***SAME******SAME******SAME******SAME******SAME******SAME******SAME******SAME***
+
+select c.cname, c.rid, c.fid, f.fid, f.sp_skill1, f.sp_skill2
+from courses c
+inner join faculty f
+on c.fid = f.fid; 
+
+select c.cname, c.rid, c.fid, f.fid, f.sp_skill1, f.sp_skill2
+from courses c
+inner join faculty f
+on f.fid = c.fid; 
+
+
+select c.cname, c.rid, c.fid, f.fid, f.sp_skill1, f.sp_skill2
+from courses c
+inner join faculty f
+on c.fid = f.fid
+where f.sp_skill1='database' or f.sp_skill2 in ('database', 'Database');
+
+***SAME******SAME******SAME******SAME******SAME******SAME******SAME******SAME***
+
+
+
+category ---- cname unique and not null
+cid cname description
+
+saleman ----- sname -----not null
+sid sname city
+
+prodid pname qty price catid sid
+
+
+1. List all products with category chips
+
+select p.pname 
+from aproduct p  
+inner join category c
+on p.cid = c.cid
+where c.cname = 'chips';
+
+2. display all products sold by kirti
+
+select p.pname
+from aproduct p
+inner join sales_man s
+on p.sid = s.sid
+where s.sname = 'Kirti';
+
+3. display all sales_man who do not sold any product
+
+select s.*
+from aproduct p
+right join sales_man s
+on p.sid=s.sid
+where p.sid is null;
+
+
+
+4. display all category for which no product is there
+
+select c.*
+from category c
+left join aproduct a
+on c.cid=a.cid
+where a.cid is null;
+
+
+5. display all products with no category assigned
+
+select a.*
+from  category c
+right join aproduct a
+on a.cid=c.cid
+where c.cid is null;
+
+
+6. list all sales_man who stays in city with name starts with P or N
+
+select *
+from sales_man
+where regexp_like(city,'^[PN]');
+
+7. add new column in sales_man table by name 'credit limit'
+
+alter table sales_man
+add credit_limit number(7);
+
+
+
+
+
+
+
+update product
+set sid = 5
+where pid = 5;
+
+
+select p.pid, p.pname, m.pname
+from product p
+join product m
+on p.sid = m.pid
+order by p.pid;
+
+select p.pid, p.pname, m.pname
+from product p
+join product m
+on m.sid = p.pid
+order by p.pid;

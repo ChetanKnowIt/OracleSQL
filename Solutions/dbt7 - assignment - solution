@@ -1,0 +1,148 @@
+1. From emp table write a SQL query to find those employees whose ID matches any 
+   of the numbers 7902, 7876 and 7934. Return all the fields. 
+
+
+   select * 
+   from emp
+   where empno in (7902,7876,7934);
+
+2. From emp table, write a SQL query to find the employee whose salary is 3000 and 
+   reporting person’s ID is 7876. Return all fields. 
+   select * 
+   from emp
+   where sal = 3000;
+
+3. From emp table  write a SQL query to find those employees whose salary falls within 
+   the range of the smallest salary and 2500. Return all the fields.
+
+   select *
+   from emp
+   where sal between 0 and 2500;
+
+4. From emp table, write a SQL query to find those employees who do not work in the 
+   departments where managers’ IDs are between 7566 and 7698 
+   (Begin and end values are included.). Return all the fields of the employeess.
+
+
+   select * from emp
+   where deptno not in ( select deptno from emp
+                           where mgr between 7566 and 7698);
+
+5. From emp table, write a SQL query to find those employees who get second-highest salary. Return all the fields of the employees. 
+
+      select *
+      from emp e1
+      where 1=(select count (distinct sal)
+               from emp e2
+               where e2.sal > e1.sal);
+
+
+
+From emp table write a SQL query to find those employees who work in the same department
+   as ‘Ward’. Return first name, last name and hire date. 
+
+
+select ename,hiredate,DEPTNO
+from emp
+where deptno=(select deptno 
+               from emp
+               where ename='WARD'
+);
+
+7. From emp table, write a SQL query to find those employees who work in a department where the
+   employee’s first name contains the letter 'B'. Return employee ID, first name and last name.
+
+      SELECT EMPNO,ENAME
+      FROM EMP
+      WHERE DEPTNO = (SELECT DEPTNO
+      FROM EMP 
+      WHERE REGEXP_LIKE (ENAME, '^B.*'));
+
+
+8. From emp table, write a SQL query to find those employees who earn more than the average salary 
+   and work in the same department as an employee whose first name contains the letter 'B'. Return employee ID, first 
+   name and salary.
+
+      
+      SELECT ENAME
+      FROM EMP
+      WHERE (SAL > (SELECT AVG(SAL) FROM EMP))
+      AND (DEPTNO = (SELECT DEPTNO FROM EMP WHERE REGEXP_LIKE(ENAME, '^B.*')));
+
+      
+      SELECT ENAME, SAL
+      FROM EMP 
+      WHERE DEPTNO = (SELECT DEPTNO FROM EMP WHERE REGEXP_LIKE(ENAME, '^B.*'));
+
+9. From emp table, write a SQL query to find those employees whose department is located at
+   ‘Chicago’. Return first name, last name, employee ID  .
+
+      SELECT EMPNO,ENAME
+      FROM EMP
+      WHERE DEPTNO = (SELECT DEPTNO
+      FROM DEPT
+      WHERE LOC = 'CHICAGO');
+
+10.From emp table, write a SQL query to calculate total salary of the departments where at least one 
+   employee works. Return department ID, total salary
+
+
+      SELECT DEPTNO,max(sal),sum(sal)   
+      FROM emp 
+      group by deptno
+      having count(deptno)>1;
+      
+11.From emp table, write a SQL query to check whether there are any employees with salaries
+   exceeding 1500. Return first name, last name and department ID
+
+
+      SELECT ENAME,DEPTNO,SAL
+      FROM EMP
+      WHERE SAL > 1500;
+
+      12.From emp table, write a SQL query to find those employees whose salaries are higher 
+   than the average for all departments
+
+
+SELECT ENAME,SAL, DEPTNO
+FROM EMP
+WHERE SAL > ANY (SELECT AVG(SAL)
+FROM EMP 
+GROUP BY DEPTNO
+)
+ORDER BY SAL;
+
+
+13.From emp table, write a SQL query to find those employees who earn more than the minimum salary of 
+   a department of ID 30. Return first name, last name, salary, and department ID
+
+SELECT EMPNO, ENAME, SAL, DEPTNO
+FROM EMP
+WHERE SAL > ( SELECT MIN(SAL) FROM EMP GROUP BY DEPTNO HAVING DEPTNO = 30);
+
+
+14.From emp table, write a SQL query to find those employees whose salary matches that of the employee 
+   who works in department ID 30. Return first name, last name, salary, and department ID.
+
+   SELECT EMPNO, ENAME, SAL, DEPTNO
+   FROM EMP
+   WHERE SAL = ALL ( SELECT SAL FROM EMP WHERE DEPTNO = 30);
+
+15.From emp table, write a SQL query to find employees who work for the department in which employee
+   ID 7788 is employed. Return first name, last name, salary, and department ID. 
+*************WRONG QUESTION OR DATABASE*********
+
+   SELECT * 
+   FROM EMP
+   WHERE DEPTNO = ( SELECT DEPTNO FROM EMP WHERE EMPNO = 7788);
+
+
+16. From emp table, write a SQL query to find departments for a particular location. The location matches 
+    the location of the department of ID 30. Return department name and department ID
+*********WRONG QUESTION OR DATABASE**********
+
+    SELECT DNAME, DEPTNO, LOC
+    FROM DEPT 
+    WHERE DEPTNO = ALL ( SELECT DEPTNO
+                   FROM EMP 
+                   WHERE DEPTNO = 30) ;  

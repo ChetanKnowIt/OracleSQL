@@ -1,0 +1,86 @@
+﻿create table Vehicle
+(Vid number(5),
+Vname varchar2(15),
+Price number(6),
+vdsc varchar2(100)
+);
+
+
+insert into Vehicle
+(Vid ,Vname,Price,vdsc)
+values (1,'Activa',80000,'Two wheeler.Sturdy.mileage 40 km');
+
+insert into Vehicle
+(Vid ,Vname,Price,vdsc)
+values (2,'Santro',800000,'Product of Hyundai');
+
+insert into Vehicle
+(Vid ,Vname,Price,vdsc)
+values (3,'Royal Enfield',200000,'Two wheeler.Heavy.mileage 30 km');
+
+create table Customer
+(Custid number(3),Cname varchar2(15),address varchar2(50));
+
+insert into Customer 
+values(1,'Nilima','Pimpri');
+
+
+insert into Customer 
+values(2,'Ganesh','PCMC');
+
+
+create table Salesman
+(Sid number(4),Sname varchar2(15),address varchar2(50));
+
+
+
+insert into Salesman
+values(10,'Rajesh','mumbai');
+
+insert into Salesman
+values(11,'Seema','Pune');
+
+insert into Salesman
+values(10,'Rakhi','Thane');
+
+
+create table cust_vehicle
+(Custid number(3),Vid number(3),Sid number(3),Buy_Price number(8));
+
+insert into cust_vehicle
+values(1,1,10,75000);
+insert into cust_vehicle
+values(1,2,10,790000);
+insert into cust_vehicle
+values(2,3,11,80000);
+insert into cust_vehicle
+values(3,3,11,75000);
+insert into cust_vehicle
+values(3,2,10,800000);
+
+
+update cust_vehicle
+set Buy_price=80000
+where Buy_price=75000;
+
+
+alter table cust_vehicle
+add rating number(1);
+
+
+update cust_vehicle
+set rating=5
+where Buy_price>90000;
+
+truncate table Customer;
+
+drop table Salesman;
+
+select * from Customer
+
+
+select vdsc from Vehicle 
+where Vname ='Royal Enfield';
+
+
+select Sname from Salesman where address='Pune';

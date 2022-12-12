@@ -1,0 +1,204 @@
+day 5 solututions
+
+1. Display employee name who is earning maximunm salary.
+
+select ename
+from emp
+where sal=(select max(sal)
+            from emp);
+
+2. Find all employees who work in the department where martin works.
+select ename 
+from emp
+where deptno=(
+              select deptno
+              from emp
+              where ename='MARTIN'
+          );
+
+
+3. Find all employees who work in the department where Smith works or Allen works  
+
+select ename 
+from emp
+where deptno in (select deptno
+				from emp
+				where ename='SMITH' 
+				OR 
+				ENAME='ALLEN' );        
+
+4. Display all who earn more than Allen or Smith.
+
+select * 
+from emp
+where sal>all(select sal
+               from emp
+               where ename='ALLEN' OR ENAME='SMITH'
+              );
+
+ Delete all employees who work in Smith's dept and earn more than 1200 as a sal.
+
+
+ CREATE TABLE EMP55
+ AS 
+ SELECT *
+ FROM EMP;     
+
+DELETE 
+FROM EMP55
+WHERE SAL>1200 AND DEPTNO=( SELECT DEPTNO
+                             FROM EMP55
+                             WHERE ENAME='SMITH'
+                           );         
+
+
+
+6.Change the sal of Smith to same a Jones.
+
+
+UPDATE EMP55
+SET SAL=( SELECT SAL
+           FROM EMP55
+           WHERE ENAME='MILLER'
+         )
+         WHERE ENAME='SMITH'
+         ;     
+
+7. Increase the salary by 10% in the database for all employees having experience more than 40 years
+
+
+update emp55
+set sal=(sal+sal*0.1)
+where floor(months_between(sysdate,hiredate)/12)>40;
+
+
+8. Implement following using case statement. Use data from emp database.
+   If comm is null ‘need improvement’ If <500 “ok” If >=500 and < 1000 ‘good' ‘Excellent'
+
+select empno, ename, sal, comm, 
+case when comm is null then 'need improvement'
+when comm<500 then 'ok'
+when comm>=500 and comm<1000 then 'good'
+else 'excellent' 
+end "remarks"
+from emp55;
+
+
+9. For any available table create a sequence and check how it works.
+
+
+create table product
+(pid number(2),
+pname varchar2(10),
+constraint pk_pid primary key (pid)
+);
+
+create table pdct
+(
+srno number(2),
+did number(2),
+qty number(4),
+price number(4,2),
+constraint sr_no primary key(srno),
+constraint fk_id foreign key (did) references product(pid)
+on delete cascade
+);
+
+insert into product
+values(1,'dahi');
+insert into product
+values(2,'shreekhand');
+insert into product
+values(3,'aandaa');
+insert into product
+values(4,'bread');
+insert into product
+values(5,'chips');
+
+
+create sequence srseq
+start with 0
+increment by 1
+minvalue 0
+maxvalue 100
+nocycle;
+
+insert into pdct
+values(srseq.nextval,1,99,20.80);
+insert into pdct
+values(srseq.nextval,2,506,50.30);
+insert into pdct
+values(srseq.nextval,3,5000,5.20);
+insert into pdct
+values(srseq.nextval,4,8000,15);
+insert into pdct
+values(srseq.nextval,5,7852,10);
+
+
+
+10. From the emp table, write a SQL query to find out which employees have the same job as the employee whose eno is ID is 7499. Return ename,job,deptno.
+
+select ename,job,deptno
+from emp
+where job=(select job
+from emp
+where empno=7499);
+
+11.From the emp table, write a SQL query to find those employees who receive a higher salary than the employee 
+   with eno 7499. Return ename,job,deptno,sal.
+
+  select ename,job,sal
+  from emp
+  where sal>(select sal 
+  from emp 
+  where empno=7499);
+
+12. From the emp table, write a SQL query to find those employees whose salary matches the lowest salary of any of the departments. Return name, and department ID.
+
+    select ename,deptno,sal
+    from emp 
+    where sal = any(select min(sal)
+    from emp
+    group by deptno
+   );
+
+13.From the emp table, write a SQL query to find those employees who earn more than the average salary. Return employee ID,  name,sal.
+
+
+    select ename,empno,sal, deptno
+    from emp 
+    where sal > any(select avg(sal)
+    from emp
+    group by deptno
+   )
+   order by deptno;
+
+
+14.From the emp table, write a SQL query to find those employees who report to that manager whose name
+   starts with  ‘F’. Return employee ID,  name,sal.   
+
+   select empno, ename, sal
+   from emp
+   where mgr = any(	  select empno
+   					  from emp
+   					  where ename like 'F%'
+   	);   
+
+
+15. From the emp table, write a SQL query to find those employees whose salary is in the range of 1000, and 3000
+   (Begin and end values included.). Return all the fields.
+
+
+   select * 
+   from emp
+   where sal between 1000 and 3000;
+
+   
+16. From the emp table , write a SQL query to find those employees whose salary falls within the range of the smallest
+    salary and 2500. Return all the fields. 
+ 
+ select * 
+ from emp
+ where sal between ( select min(sal)
+ 					 from emp) 
+ 		and 2500;
